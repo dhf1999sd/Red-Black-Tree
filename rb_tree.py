@@ -16,10 +16,10 @@ class Node:
         self.left = left
         self.right = right
 
-    def __repr__(self):
+    def __repr__(self):                # __repr__ 用于打印节点信息，显示节点颜色和值。
         return '{color} {val} Node'.format(color=self.color, val=self.value)
 
-    def __iter__(self):
+    def __iter__(self):                #__iter__方法以中序遍历的方式遍历以该节点为根的子树。
         if self.left.color != NIL:
             yield from self.left.__iter__()
 
@@ -29,6 +29,9 @@ class Node:
             yield from self.right.__iter__()
 
     def __eq__(self, other):
+        # 定义节点相等性判断：
+        # 1. 如果双方都是NIL节点，则相等。
+        # 2. 否则需要比较两节点的值、颜色和父节点信息。
         if self.color == NIL and self.color == other.color:
             return True
 
@@ -39,6 +42,7 @@ class Node:
         return self.value == other.value and self.color == other.color and parents_are_same
 
     def has_children(self) -> bool:
+              #"""返回该节点是否有子节点（非NIL）"""
         """ Returns a boolean indicating if the node has children """
         return bool(self.get_children_count())
 
@@ -50,14 +54,16 @@ class Node:
 
 
 class RedBlackTree:
-    # every node has null nodes as children initially, create one such object for easy management
+    # every node has null nodes as children initially, create one such object for easy management、
+      # 使用一个共享的NIL叶子节点来表示所有空指针子节点，方便管理。
     NIL_LEAF = Node(value=None, color=NIL, parent=None)
 
     def __init__(self):
-        self.count = 0
-        self.root = None
+        self.count = 0         # 树中节点数量
+        self.root = None       # 树的根节点
         self.ROTATIONS = {
             # Used for deletion and uses the sibling's relationship with his parent as a guide to the rotation
+             # 用于在删除操作中，根据兄弟节点方向选择对应的旋转操作
             'L': self._right_rotation,
             'R': self._left_rotation
         }
@@ -66,7 +72,7 @@ class RedBlackTree:
         if not self.root:
             return list()
         yield from self.root.__iter__()
-
+# __iter__：对整棵树以中序遍历的方式生成值的序列。
     def add(self, value):
         if not self.root:
             self.root = Node(value, color=BLACK, parent=None, left=self.NIL_LEAF, right=self.NIL_LEAF)
